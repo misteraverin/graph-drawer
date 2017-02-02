@@ -8,6 +8,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsWidget>
 #include <QGraphicsProxyWidget>
+#include <QGridLayout>
 #include "graphwidget.h"
 
 class MainWindow : public QWidget

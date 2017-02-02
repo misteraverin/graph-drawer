@@ -1,6 +1,5 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
-import QtQuick.Dialogs 1.2
 
 ApplicationWindow {
     visible: true
@@ -22,17 +21,8 @@ ApplicationWindow {
         }
     }
 
-    MainForm {
-        anchors.fill: parent
-        Canvas {
-            id: initialImage
-        }
-        Canvas {
-            id: finalImage
-        }
-
-        button1.onClicked: messageDialog.show(qsTr("Button 1 pressed"))
+    Label {
+        text: qsTr("Hello World")
+        anchors.centerIn: parent
     }
-
-
 }
