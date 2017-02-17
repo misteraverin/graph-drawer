@@ -140,8 +140,10 @@ void individual::number_crossings(){
         point p1, p2, p3, p4;
         int u = edges[i].first, v = edges[i].second;
         int u1 = edges[j].first, v1 = edges[j].second;
-        p1 = {nodes[u].x, nodes[v].y};
-        p2 = {nodes[u1].x, nodes[v1].y};
+        p1 = {nodes[u].x, nodes[u].y};
+        p2 = {nodes[v].x, nodes[v].y};
+        p3 = {nodes[u1].x, nodes[u1].y};
+        p4 = {nodes[v1].x, nodes[v1].y};
         cnt_crossings += intersect(p1, p2, p3, p4);
      }  
    }
