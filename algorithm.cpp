@@ -31,24 +31,27 @@ class individual{
    vector<pair<int, int> >edges;
    vector<int> graph[NUMBER_VERTEX];
    double min_dist[NUMBER_VERTEX];
-   double minimum_dist_sum = 0, min_dist_node=0, min_edge=0, deviation=0;
+   double minimum_dist_sum = 0, min_dist_node = 0, min_edge = 0, deviation = 0, crossings = 0;
    individual(unordered_map<int, point>, vector<pair<int, int> >, vector<int>[60], int);
    long long fitness;
   private:
    double get_fitness(){
       minimum_node_distance_sum();
       minimum_node_distance();
-      edge_length_deviation()
-      return 0;
+      edge_length_deviation();
+      number_crossings();
+      double expr = 2 * minimum_dist_sum;
+      expr += (-2) * deviation;
+      expr += (-2.5) * (deviation/min_dist_node);
+      expr += (0.25) * (vertex_number * min_dist_node * min_dist_node);
+      expr -= (crossings * SIZE_SQUARE * SIZE_SQUARE);
+      return expr;
    }
 
    void minimum_node_distance_sum();
    void minimum_node_distance();
    void edge_length_deviation();
-
-  /* void minimum_node_distance();
-   void minimum_node_distance();
-   void minimum_node_distance();   */
+   void number_crossings();
 };
 
 individual::individual(unordered_map<int, point> map_nodes, vector<pair<int, int> >new_edges, vector<int>new_graph[NUMBER_VERTEX], int cnt){
@@ -100,7 +103,7 @@ void individual:: minimum_node_distance(){
 void individual::edge_length_deviation(){
   double sum = 0;
   for(int i = 0; i < sz(edges); i++){
-    int u = edges[i][0], v = edges[i][1];
+    int u = edges[i].first, v = edges[i].second;
     point one, two;
     one.x = nodes[u].x;
     one.y = nodes[u].y;
@@ -108,10 +111,43 @@ void individual::edge_length_deviation(){
     two.y = nodes[v].y;
     double length = dist(one, two);
     sum += (length - min_edge) *  (length - min_edge);
-
   }
-  return sqrt(sum * 1.0 / double(edge_number));
+  deviation = sqrt(sum * 1.0 / double(edge_number));
+}   
+
+
+inline int area (point a, point b, point c) {
+  return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
 }
+ 
+inline bool intersect_1 (int a, int b, int c, int d) {
+  if (a > b)  swap (a, b);
+  if (c > d)  swap (c, d);
+  return max(a,c) <= min(b,d);
+}
+ 
+bool intersect (point a, point b, point c, point d) {
+  return intersect_1 (a.x, b.x, c.x, d.x)
+    && intersect_1 (a.y, b.y, c.y, d.y)
+    && area(a,b,c) * area(a,b,d) <= 0
+    && area(c,d,a) * area(c,d,b) <= 0;
+}
+
+void individual::number_crossings(){
+   int cnt_crossings = 0;
+   for(int i = 0; i < sz(edges); i++){
+     for(int j = i + 1; j < sz(edges); i++){
+        point p1, p2, p3, p4;
+        int u = edges[i].first, v = edges[i].second;
+        int u1 = edges[j].first, v1 = edges[j].second;
+        p1 = {nodes[u].x, nodes[v].y};
+        p2 = {nodes[u1].x, nodes[v1].y};
+        cnt_crossings += intersect(p1, p2, p3, p4);
+     }  
+   }
+   crossings = cnt_crossings;
+}
+
 
 int edge_number, vertex_number, num, x, y, u, v; 
 bool nodes[NUMBER_VERTEX];
