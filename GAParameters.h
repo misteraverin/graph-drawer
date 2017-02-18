@@ -8,7 +8,6 @@
 #include <array>
 
 struct GAParameters {
-    int reproducibleSize;
     int crossoverRate;
     int mutationRate;
     // for linear normalization

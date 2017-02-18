@@ -2,6 +2,21 @@
 #include <assert.h>
 #include "Individual.h"
 
+using namespace std;
+
+#define MAXN int(1e3 + 10)
+#define INF int(1e9)
+#define pb push_back
+#define mp make_pair
+#define sz(A) (int)(A).size()
+#define sqr(a) ((a) * (a))
+
+
+const int SIZE_POPULATION = 10;
+const int SIZE_SQUARE = 40;
+const int NUMBER_VERTEX = 60;
+
+
 
 bool Individual::isPositionFree(point p) {
     return p.x >= 0 && p.x < N && p.y >= 0 && p.y < N && (matrix[p.x][p.y] == -1);
@@ -135,9 +150,14 @@ Individual::Individual(std::vector<point> positions, std::shared_ptr<std::vector
         freeCells.erase(point(positions[i].x, positions[i].y));
         degPartialSums.push_back(i > 0 ? degPartialSums[i - 1] + (*adj)[i].size() : (*adj)[0].size());
     }
+    edgeNumber = 0;
     for (int i = 0; i < vertexNumber; ++i) {
-        for (int j = 0; j < (*adj)[i].size(); ++j)
+        for (int j = 0; j < (*adj)[i].size(); ++j) {
+            int v = (*adj)[i][j];
             std::cout << (*adj)[i][j] << ' ';
+            if (v < i)
+                ++edgeNumber;
+        }
         std::cout << std::endl;
     }
 //    this->params = parameters;
@@ -340,6 +360,74 @@ std::pair<int, int> Individual::getRandomEdge() {
     return std::pair<int, int>(-1, -1);
 }
 
+// set double sum_min_dist
+void Individual:: minimum_node_distance_sum(){
+  double sum_min_dist = 0;
+  double global_min_edge = INF;
+  std::vector<double> min_dist;
+  min_dist.resize(vertexNumber);
+  for(int i = 0; i < vertexNumber; i++){
+    double min_dist_node = INF;
+    for(int j = 0; j < (*adjacencyList)[i].size(); j++){
+      int u = (*adjacencyList)[i][j];
+      int v = i;
+      min_dist_node = min(min_dist_node, dist(positions[u], positions[v]));
+    }
+    if(min_dist_node >= INF)  continue;
+    else{
+      sum_min_dist += min_dist_node;
+      min_dist[i] = min_dist_node;
+      global_min_edge = min(min_dist_node, global_min_edge);
+    }
+  }
+  minimum_dist_sum = sum_min_dist;
+  min_edge = global_min_edge;
+}
+
+void Individual:: minimum_node_distance(){
+  min_dist_node = vertexNumber *  min_edge * min_edge;
+}
+
+
+void Individual::edge_length_deviation(){
+  double sum = 0;
+  for (int u = 0; u < vertexNumber; ++u)
+      for (size_t j = 0; j < (*adjacencyList)[u].size(); ++j) {
+          int v = (*adjacencyList)[u][j];
+          double length = dist(positions[u], positions[v]);
+          sum += (length - min_edge) *  (length - min_edge);
+      }
+  deviation = sqrt(sum * 1.0 / double(edgeNumber));
+}
+
+
+void Individual::number_crossings(){
+   int cnt_crossings = 0;
+   for (int u = 0; u < vertexNumber; ++u) {
+       for (size_t j = 0; j < (*adjacencyList)[u].size(); ++j) {
+           int v = (*adjacencyList)[u][j];
+           if (u < v) {
+               for (int u1 = 0; u1 < vertexNumber; ++u1)
+                   for (size_t k = 0; k < (*adjacencyList)[u1].size(); ++k) {
+                       int v1 = (*adjacencyList)[u1][j];
+                        cnt_crossings += intersect(positions[u], positions[v], positions[u1], positions[v1]);
+                   }
+           }
+       }
+   }
+   crossings = cnt_crossings;
+}
+
+
 double Individual::fitness() {
-    return 0;
+    minimum_node_distance_sum();
+    minimum_node_distance();
+    edge_length_deviation();
+    number_crossings();
+    double expr = 2 * minimum_dist_sum;
+    expr += (-2) * deviation;
+    expr += (-2.5) * (deviation/min_dist_node);
+    expr += (0.25) * (vertexNumber * min_dist_node * min_dist_node);
+    expr -= (crossings * N * N);
+    return expr;
 }

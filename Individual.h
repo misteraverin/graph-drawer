@@ -20,7 +20,9 @@ const int N = 40;
 #endif
 
 class Individual {
+    double minimum_dist_sum = 0, min_dist_node = 0, min_edge = 0, deviation = 0, crossings = 0;
     int vertexNumber;
+    int edgeNumber;
 	std::shared_ptr<std::vector<std::vector<int>>> adjacencyList;
 	std::vector<int> degPartialSums;
 	int matrix[N][N];
@@ -34,6 +36,10 @@ class Individual {
 	void clearRectangle(std::set<int>, Individual, point);
 	point getRandomFreeCell();
 	std::pair<int, int> getRandomEdge();
+    void minimum_node_distance_sum();
+    void minimum_node_distance();
+    void edge_length_deviation();
+    void number_crossings();
 public:
 	Individual(std::vector<point> positions, std::shared_ptr<std::vector<std::vector<int>>> adj);
 	Individual(std::shared_ptr<std::vector<std::vector<int>>> adj);

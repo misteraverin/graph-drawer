@@ -7,7 +7,6 @@
 #define pb push_back
 #define mp make_pair
 #define sz(A) (int)(A).size()
-#define pi 3.1415926535897932384626433832795
 #define sqr(a) ((a) * (a))
 #define out(x) cout<<(x)<<" " << "\n"
 #define DB(x) cerr<<#x<<" = "<<(x)<<"\n"

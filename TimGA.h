@@ -12,14 +12,14 @@
 #include "Individual.h"
 
 bool cmpIndividuals(Individual, Individual);
-
 class TimGA {
+    static std::pair<int, int> getRandomPair(std::vector<int>& probs);
     GAParameters parameters;
     std::shared_ptr<std::vector<std::vector<int>>> adjacencyList;
 public:
     void setParameters(GAParameters);
     void setGraph(std::shared_ptr<std::vector<std::vector<int>>>);
-    void evolve();
+    Individual evolve();
 };
 
 
