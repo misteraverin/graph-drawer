@@ -13,15 +13,17 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
     layout->addWidget(finalRepresentation, 0, 1);
     layout->addWidget(button, 1, 0, Qt::AlignHCenter);
     setLayout(layout);
+    dumpObjectTree();
     qInfo() << initialRepresentation->size().width() << " " << initialRepresentation->size().height() << endl;
     finalRepresentation->setWaitForClick(1);
     connect(button, &QPushButton::clicked, finalRepresentation, &GraphWidget::drawOnClick);
 
 }
 
+MainWindow::~MainWindow() {
+}
+
 void MainWindow::setGraph(QVector<QVector<int> > adjList) {
     initialRepresentation->setGraph(adjList);
-//    initialRepresentation->setCoordinates(GraphWidget::genRandomPoints(adjList.size(), initialRepresentation->baseSize().width()));
     finalRepresentation->setGraph(adjList);
-//    finalRepresentation->setCoordinates(GraphWidget::genRandomPoints(adjList.size(), finalRepresentation->baseSize().width()));
 }

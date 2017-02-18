@@ -6,7 +6,11 @@ CONFIG += c++11
 
 SOURCES += main.cpp \
     graphwidget.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    GAParameters.cpp \
+    Individual.cpp \
+    point.cpp \
+    TimGA.cpp
 
 RESOURCES += qml.qrc
 
@@ -20,4 +24,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     graphwidget.h \
-    mainwindow.h
+    mainwindow.h \
+    GAParameters.h \
+    Individual.h \
+    point.h \
+    TimGA.h

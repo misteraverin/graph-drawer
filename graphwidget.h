@@ -23,7 +23,6 @@ protected:
     void paintEvent(QPaintEvent *ev) override;
 public:
     // generate random points in size * size matrix
-    // WARNING: always produces the same result when using MinGW
     static QVector<QPoint> genRandomPoints(int n, int size);
     static int matrixSize;
     int getVertexNumber() const;

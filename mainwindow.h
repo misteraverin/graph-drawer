@@ -21,6 +21,7 @@ private:
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
     void setGraph(QVector<QVector<int>>);
 signals:
 
